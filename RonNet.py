@@ -90,20 +90,17 @@ class RonNetWrap(object):
 
     # best img is of croped face
     def top_emotion(self, img):
+
         if len(img.shape) > 2:
             img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         img = cv2.resize(img, (self.size_y, self.size_x))  # x and y are opposite since x is row, y is col
         #img = img / 255.0  # normalize
-        img11 = Image.fromarray(img, 'L')
-        curr_time = time.time()
-        img11.save(os.path.join(r'C:\Users\neuro\Desktop\ZoomEmotion\all_photos',str(curr_time) + ".png"))
-        np.set_printoptions(threshold=sys.maxsize)
+        # img11 = Image.fromarray(img, 'L')
+        # curr_time = time.time()
+        # img11.save(os.path.join(r'C:\Users\neuro\Desktop\Zoom_Emotion\all_photos',str(curr_time) + ".png"))
         img = torch.tensor(img, dtype=torch.float32)
         img = torch.unsqueeze(img, 0)
         img = torch.unsqueeze(img, 0)
-        # file = open(os.path.join(r'C:\Users\neuro\Desktop\ZoomEmotion\all_photos',"face_mat_ " + str(curr_time) + ".txt"), "w+")
-        # file.write(str(img))
-        # file.close()
         if CUDA_FLAG:
             img = img.type(torch.cuda.FloatTensor)
             img = img.cuda()
@@ -111,15 +108,14 @@ class RonNetWrap(object):
             img = img.type(torch.FloatTensor)
         output = self.net(img)
         percentages = F.softmax(output, dim=1)[0]
-        
         # noinspection PyArgumentList
         _, prediction = torch.max(output, 1)  # second param "1" represents the dimension to be reduced
 
         eText, percentages = self.emotions[prediction.data.cpu().numpy()[0]], max(percentages.data.cpu().numpy())
 
-        file = open(os.path.join(r'C:\Users\neuro\Desktop\ZoomEmotion\all_photos',"emotion_ " + str(curr_time) + ".txt"), "w+")
-        file.write(" score: " + str(percentages) + " Emotion:" + eText)
-        file.close()
+        # file = open(os.path.join(r'C:\Users\neuro\Desktop\ZoomEmotion\all_photos',"emotion_ " + str(curr_time) + ".txt"), "w+")
+        # file.write(" score: " + str(percentages) + " Emotion:" + eText)
+        # file.close()
         return eText, percentages
 
 

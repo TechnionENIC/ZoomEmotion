@@ -9,7 +9,7 @@ from mss import mss
 from EmotionDetection import IEmotionDetection
 from FrameDetection import FrameDetection
 from nameDetection import NameDetection
-#Delete-vicki
+
 from PIL import Image
 import face_recognition
 import time
@@ -122,34 +122,23 @@ class NamesAndEmotionRecognition:
         nx = int(centerx - r)
         ny = int(centery - r)
         nr = int(r * 2)
-        ny = round(ny - 20)  # fix wrong offset
-        #face_img = img[ny:ny + nr + 50, nx:nx + nr + 50]
-        
+        ny = round(ny - 20)  # fix wrong offset        
         face_img = img[y:y + h, x:x + w]
         emotion = "Neutral"
-
-        
-        #imoji = face_recognition.load_image_file(r"C:\Users\neuro\PycharmProjects\Emotions_roy\data\datasets\children\1_CAFE_E5.jpg") 
         reshaped_img = face_img.reshape(face_img.shape[0], face_img.shape[1], 1) 
         encoding_1  = face_recognition.face_encodings(reshaped_img.repeat(3,2))
-        print(encoding_1)
-        #now = datetime.now()
-        
-        #current_time = now.strftime("%H:%M:%S")
+
         np.set_printoptions(threshold=sys.maxsize)
         if len(encoding_1) != 0:
             emotion, score = self.emotion_detector.detect(face_img)
             print(score)
-            # img11 = Image.fromarray(face_img, 'L')
-            # curr_time = time.time()
-            # img11.save(os.path.join(r'C:\Users\neuro\Desktop\ZoomEmotion\all_photos',str(curr_time) + ".png"))
-            # file = open(os.path.join(r'C:\Users\neuro\Desktop\ZoomEmotion\all_photos',"emotion_ " + str(curr_time) + ".txt"), "w+")
+            #img11 = Image.fromarray(face_img, 'L')
+            #curr_time = time.time()
+            # img11.save(os.path.join(r'C:\Users\neuro\Desktop\Zoom_Emotion\all_photos',str(curr_time) + ".png"))
+            # file = open(os.path.join(r'C:\Users\neuro\Desktop\Zoom_Emotion\all_photos',"emotion_ " + str(curr_time) + ".txt"), "w+")
             # file.write("Emotion: " + emotion + " score: " + str(score))
             # file.close()
-            # file = open(os.path.join(r'C:\Users\neuro\Desktop\ZoomEmotion\all_photos',"face_mat_ " + str(curr_time) + ".txt"), "w+")
-            # file.write(str(face_img))
-            # file.close()
-            # print(emotion)
+            print(emotion)
         else:
             score = 0
         return emotion, score, nx, nx + nr, ny, ny + nr
@@ -162,14 +151,11 @@ class NamesAndEmotionRecognition:
 
     def detect_face_from_frame(self, frame_rect, img):
         x, y, w, h = frame_rect
-        #print(x, y, w, h)
-        # print(len(img), len(img[0]))
         face = None
         frame_data = img[y:y + h, x:x + w]
         #img11 = Image.fromarray(frame_data, 'L')
         #img11.save(os.path.join(r'C:\Users\neuro\Desktop\ZoomEmotion\all_photos',str(time.time()) + ".png"))
         faces = self.face_detector.detect(img)
-        print("faces: ", faces)
         if len(faces) > 0:
             face = faces[random.randint(0,len(faces) - 1)]
         text_place = img[y + h - self.text_height:y + h, x:x + int(w / 2)]
